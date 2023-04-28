@@ -1,3 +1,6 @@
+## Data visualizations
+## Author: Laura Olivia Olvera
+
 library(tidyverse)
 library(ggplot2)
 library(readxl)
@@ -6,8 +9,11 @@ library(dplyr)
 library(magrittr)
 library(tidyr)
 
-path_raw <- "C:/Users/karla/OneDrive/Documents/MPP/Quarter 4/Data and Programming/final-project-karla-olivia-astrid/raw_data/"
-path_clean <- "C:/Users/karla/OneDrive/Documents/MPP/Quarter 4/Data and Programming/final-project-karla-olivia-astrid/clean_data/"
+## Set paths
+## Change this when needed
+path_raw <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/raw_data"
+path_clean <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/clean_data"
+path_plot <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/plots"
 
 
 plot_format <-  theme(panel.background = element_blank(), 
@@ -21,7 +27,7 @@ plot_format <-  theme(panel.background = element_blank(),
                       axis.line = element_line(colour = "black", size = .5), 
                       plot.caption=element_text(size=9, hjust=0)) 
 
-#Out-of-pocket
+## Out-of-pocket
 df_final <- read.csv(file.path(path_clean,"df_final.csv"))
 
 df_final <- transform(df_final, diabetes = as.numeric(diabetes))
@@ -39,9 +45,12 @@ out_of_pocket_plot <- df_final %>%
   plot_format +
   coord_flip()
 
+png(file.path(path_plot,"out_of_pocket_plot.png"))
 out_of_pocket_plot
+dev.off()
 
-#Life expectancy
+
+## Life expectancy
 life_expectancy_plot <- df_final %>%
   filter(date==2019) %>%
   drop_na(out_of_pocket) %>%
@@ -56,9 +65,14 @@ life_expectancy_plot <- df_final %>%
        caption = "Source: World Bank")  +
   plot_format
 
-life_expectancy_plot
 
-#Diabetes
+png(file.path(path_plot,"life_expectancy_plot.png"))
+life_expectancy_plot
+dev.off()
+
+
+
+## Diabetes
 diabetes_plot <- df_final %>%
   filter(date==2019) %>%
   drop_na(out_of_pocket) %>%
@@ -73,11 +87,12 @@ diabetes_plot <- df_final %>%
        caption = "Source: World Bank")  +
   plot_format
 
+png(file.path(path_plot,"diabetes_plot.png"))
 diabetes_plot
+dev.off()
 
 
-
-#Health expenditure in Mexico 
+## Health expenditure in Mexico 
 health_exp_mex <- read.csv(file.path(path_clean,"health_exp_mex.csv"))
 
 health_exp_mex_plot <- ggplot(health_exp_mex, aes(y = expenditure, x = date)) +
@@ -92,5 +107,7 @@ health_exp_mex_plot <- ggplot(health_exp_mex, aes(y = expenditure, x = date)) +
   theme(legend.title = element_blank(),
         legend.position="right")
 
-health_exp_mex_plot
 
+png(file.path(path_plot,"health_exp_mex_plot.png"))
+health_exp_mex_plot
+dev.off()

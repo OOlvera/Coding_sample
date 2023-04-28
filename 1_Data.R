@@ -1,6 +1,5 @@
-# Fall 2022
-# Final Project - KARLA, ASTRID & OLIVIA
 # Get Data sources
+# Author: Laura Olivia Olvera
 
 library(tidyverse)
 library(ggplot2)
@@ -28,13 +27,15 @@ library(lubridate)
 # install.packages("wbstats")
 
 # Set paths
-path_raw <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/final-project-karla-olivia-astrid/raw_data/"
-path_clean <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/final-project-karla-olivia-astrid/clean_data/"
+# Change this when needed
+path_raw <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/raw_data"
+path_clean <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/clean_data"
 
 
 ## Data source 1
-## From the World Bank API
-## Data of life expectancy, out-of-pocket expenditure, GDP and health expenditure (% of GDP) by country
+## Source: the World Bank API
+## Variables: Data of life expectancy, out-of-pocket expenditure, GDP and health expenditure (% of GDP) by country
+
 start_date = 2000
 end_date = 2019
 
@@ -65,8 +66,9 @@ df <- reduce(data, left_join, by = c("iso3c", "date", "country")) %>%
 
 
 ## Data source 2
-## CSV of diabetes prevalence
 ## Source: https://diabetesatlas.org/data/en/indicators/2/
+## Variables: CSV of diabetes prevalence
+
 df_diabetes = read.csv(file.path(path_raw,"IDF (age-adjusted-comparative-prevalence-of-diabetes---).csv")) %>%
   select(Country.Territory, X2000, X2011, X2021) %>%
   rename(`X2019` = `X2021`, 
@@ -85,9 +87,9 @@ write.csv(df_final, file.path(path_clean, "df_final.csv"), row.names = FALSE)
 
 
 ## Data source 3
-## CSV from the Mexican Institute of Statistics (INEGI)
 ## Disaggreation out-of-pocket expenditure, just Mexico 
 ## Source: https://www.inegi.org.mx/app/tabulados/pxwebclient/default.html?pxq=BISE_BISE_Ac0CuayZ_220713150914_7e479a70-05a1-4689-95be-2441cc671ad7
+
 headers = c("expenditure_type", "country", "date", "expenditure")
 health_exp_mex = read.csv(file.path(path_raw, "Interactivos20221130232334.csv"), header = F)
 colnames(health_exp_mex) = headers
@@ -97,7 +99,7 @@ health_exp_mex <- health_exp_mex %>%
   separate(expenditure_type, into = paste0('type', 1:3), sep = '[.]') %>%
   separate(type3, into = paste0('exp_type', 1:2), sep = '[(]') %>%
   select(date, exp_type1, expenditure) %>%
-  mutate(exp_type1 = str_replace(exp_type1, "Consultas médicas ", "Doctor visits"),
+  mutate(exp_type1 = str_replace(exp_type1, "Consultas m?dicas ", "Doctor visits"),
          exp_type1 = str_replace(exp_type1, "Bienes de apoyo ", "Support items"),
          exp_type1 = str_replace(exp_type1, "Servicios de apoyo ", "Support care"),
          exp_type1 = str_replace(exp_type1, "Servicios hospitalarios ", "Inpatient care"),
@@ -109,11 +111,11 @@ write.csv(health_exp_mex, file.path(path_clean, "health_exp_mex.csv"), row.names
 
 
 ## Data source 4
+## Source: https://stackoverflow.com/questions/3053833/using-r-to-download-zipped-data-file-extract-and-import-data
 ## ZIP directly from the url 
-## Name and location of all private primary care centers in Mexico
+## Variables: Name and location of all private primary care centers in Mexico
 ## Note that the file is too heavy (20MB) and might take time to load
 
-## Source: https://stackoverflow.com/questions/3053833/using-r-to-download-zipped-data-file-extract-and-import-data
 temp <- tempfile()
 filename = "https://www.inegi.org.mx/contenidos/masiva/denue/2022_05/denue_00_62_0522_csv.zip"
 csvfile = "conjunto_de_datos/denue_inegi_62_.csv"

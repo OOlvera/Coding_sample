@@ -1,35 +1,44 @@
-# Fall 2022
-# Final Project - KARLA, ASTRID & OLIVIA
-# Text Processing
+## Text Processing Analysis
+## Author: Laura Olivia Olvera
 
 library(tidyverse)
 library(ggplot2)
 library(tidytext)
 library(stringr) 
+#install.packages("wordcloud")
 library(wordcloud)
+#install.packages("sf")
 library(sf)
 library(rnaturalearth)
+library(devtools)
+#devtools::install_github("diegovalle/mxmaps")   
 library(mxmaps)
 library(syuzhet)
+#install.packages("stopwords")
+library(stopwords)
+library(dplyr)
+#install.packages("RColorBrewer")
+library(RColorBrewer)
+#install.packages("textdata")
+library(textdata)
 
-#devtools::install_github("diegovalle/mxmaps")   
-
-setwd("C:/Users/olivi/Box/FALL 2022/Data and Programming/final-project-karla-olivia-astrid/clean_data/")
-
-path_raw <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/final-project-karla-olivia-astrid/raw_data/"
-path_clean <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/final-project-karla-olivia-astrid/clean_data/"
-path_plot <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/final-project-karla-olivia-astrid/plots/"
+## Set paths
+## Change this when needed
+path_raw <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/raw_data"
+path_clean <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/clean_data"
+path_plot <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/plots"
 
 
 ## From Data source 4
 ## Objective: Text processing of the primary care centers in Mexico
 ## Source: Mexican National Institute of Statistics
-## Source: https://richpauloo.github.io/2017-12-29-Using-tidytext-to-make-word-clouds/
 
-nlp_data <- read.csv("nlp_data.csv")
+nlp_data <- read.csv(file.path(path_clean,"nlp_data.csv"))
 
 ## Delete stop words and additional common words not useful for the analysis. The words are in Spanish
-custom_stop_words <- bind_rows(stop_words, data_frame(word = tm::stopwords("spanish"), lexicon = "custom"))
+custom_stop_words <- data.frame(word = stopwords("es"), lexicon = "custom")
+
+
 uni_sw <- data.frame(word = c("consultorio","medico","nombre", "medicina", "médico", "consultorios", "medica", "consultorios"))
 
 nlp_words <- nlp_data %>% 
@@ -54,7 +63,6 @@ nlp_words %>%
 dev.off()
 
 
-
 ## 2. Maps
 ## Data wrangling based on the NLP data
 primary_care <- nlp_data %>%
@@ -63,7 +71,6 @@ primary_care <- nlp_data %>%
 
 primary_care$ADM1_ES <- str_to_title(primary_care$entidad) 
 primary_care$ADM1_ES <-str_trim(primary_care$ADM1_ES, side = c("right"))
-
 
 
 primary_care <- primary_care %>%
@@ -115,7 +122,7 @@ dev.off()
 
 ## From Data source 5
 ## Objective: NRC Sentiment Analysis of Mexican news about out-of-pocket
-news_nlp <- read.csv("news_nlp.csv")
+news_nlp <- read.csv(file.path(path_clean,"news_nlp.csv"))
 
 # NRC as the chosen sentiment package
 sentiment_nrc <- get_sentiments("nrc") %>%
@@ -130,7 +137,7 @@ text_df <- text_df %>%
   left_join(sentiment_nrc, by = c("word_tokens" = "word")) %>%
   filter(nrc != "positive" & nrc != "negative")
 
-# Plotting the NRC results
+## Plotting the NRC results
 png(file.path(path_plot,"NRC_plot.png"))
 ggplot(data = filter(text_df, !is.na(nrc))) +
   geom_histogram(aes(nrc), stat = "count", fill="Navy") +

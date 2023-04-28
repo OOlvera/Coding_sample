@@ -1,3 +1,6 @@
+## R Shiny App
+## Author: Laura Olivia Olvera
+
 library(tidyverse)
 library(tidytext)
 library(shiny)
@@ -14,11 +17,12 @@ library(magrittr)
 library(mxmaps)
 library(syuzhet)
 
+## Set paths
+## Change this when needed
+path_raw <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/raw_data"
+path_clean <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/clean_data"
+path_plot <- "C:/Users/olivi/Box/FALL 2022/Data and Programming/Coding_sample/plots"
 
-
-path_clean <- "C:/Users/stiar/OneDrive/Documents/data_and_programming_II/final-project-karla-olivia-astrid/clean_data/"
-path_raw <- "C:/Users/stiar/OneDrive/Documents/data_and_programming_II/final-project-karla-olivia-astrid/raw_data/"
-path_plot <- "C:/Users/stiar/OneDrive/Documents/data_and_programming_II/final-project-karla-olivia-astrid/plots/"
 
 ui <- fluidPage(
   fluidRow(
